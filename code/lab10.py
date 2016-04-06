@@ -25,37 +25,51 @@ class Run:
 
 
 
-    def moveForward(self, motorSleepTime):
+    def move(self, motorSleepTime, angle):
         print("Forward pressed!")
-        self.theta = 0
+        self.theta = angle
+        startLClicks = 0
+        startRClicks = 0
         # self.particleFilter.recieveCommand()
+        if self.theta == 0:
+            self.create.drive_direct(100,100)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0,0)
 
-        self.create.drive_direct(100,100)
-        self.time.sleep(motorSleepTime)
-        self.create.drive_direct(0,0)
+        elif self.theta < 0:
+            self.create.drive_direct(50,-50)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0,0)
+
+        else:
+            self.create.drive_direct(-50,50)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0,0)
+
+        self.particleFilter.recieveCommand(self.theta, 0.5)
         self.updateDataForParticles()
 
 
 
-    def turnRight(self, motorSleepTime):
-        print("Turn Right pressed!")
-        # self.particleFilter.recieveCommand()
-
-        self.theta = -math.pi/2
-
-        self.create.drive_direct(-50,50)
-        self.time.sleep(motorSleepTime)
-        self.create.drive_direct(0,0)
-
-    def turnLeft(self, motorSleepTime):
-        print("Turn Left pressed!")
-        # self.particleFilter.recieveCommand()
-
-        self.theta = math.pi/2
-
-        self.create.drive_direct(50,-50)
-        self.time.sleep(motorSleepTime)
-        self.create.drive_direct(0,0)
+    # def turnRight(self, motorSleepTime):
+    #     print("Turn Right pressed!")
+    #     # self.particleFilter.recieveCommand()
+    #
+    #     self.theta = -math.pi/2
+    #
+    #     self.create.drive_direct(-50,50)
+    #     self.time.sleep(motorSleepTime)
+    #     self.create.drive_direct(0,0)
+    #
+    # def turnLeft(self, motorSleepTime):
+    #     print("Turn Left pressed!")
+    #     # self.particleFilter.recieveCommand()
+    #
+    #     self.theta = math.pi/2
+    #
+    #     self.create.drive_direct(50,-50)
+    #     self.time.sleep(motorSleepTime)
+    #     self.create.drive_direct(0,0)
 
     def getSensorData(self):
         reading = self.sonar.get_distance()
@@ -64,8 +78,9 @@ class Run:
     def updateDataForParticles(self):
         del self.data[:]
         for i in range(0,2,1):
-            for j in range(0,3,1):
-             self.data.append(self.particleFilter.particles[i][j])
+            for j in range(0,4,1):
+                self.data.append(self.particleFilter.particles[i][j])
+                print(self.particleFilter.particles[i][j])
         self.virtual_create.set_point_cloud(self.data)
 
 
@@ -87,11 +102,11 @@ class Run:
         while True:
             b = self.virtual_create.get_last_button()
             if b == self.virtual_create.Button.MoveForward:
-                self.moveForward(5)
+                self.move(5,0)
             elif b == self.virtual_create.Button.TurnLeft:
-                self.turnLeft(2)
+                self.move(4,-math.pi/2)
             elif b == self.virtual_create.Button.TurnRight:
-                self.turnRight(2)
+                self.move(4,math.pi/2)
             elif b == self.virtual_create.Button.Sense:
                 self.getSensorData()
 

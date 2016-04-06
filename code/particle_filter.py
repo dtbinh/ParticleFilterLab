@@ -15,7 +15,7 @@ class ParticleFilter:
         initialTuple = (0.5, 0.5, 0.1, 0)
         self.particles = [initialTuple]
         for i in range(0,1,1):
-            tuple = (1, 1, 0.1, math.pi/2)
+            tuple = (1, 1, 0.1, np.pi/2)
             self.particles.append(tuple)
 
     def computeParticleD(self, scale, muD, muTheta, sigma):
@@ -25,12 +25,17 @@ class ParticleFilter:
             theta = np.random.normal(muTheta, scale, sigma)
             # generate x and y positions
             initialX = self.particles[i][0]
+            print("initial theta", muTheta)
+
             initialY = self.particles[i][1]
             initialZ = self.particles[i][2]
             initialTheta = self.particles[i][3]
+            value = d * math.cos(initialTheta + theta)
+            value2 = d * math.cos(initialTheta + theta)
 
-            self.particles[i][0] = initialX + d*math.cos(initialTheta + theta)
-            self.particles[i][1] = initialY + d*math.cos(initialTheta + theta)
+
+            self.particles[i][0] = initialX + value #d*np.cos(initialTheta + theta)
+            self.particles[i][1] = initialY + value2 #d*np.cos(initialTheta + theta)
             self.particles[i][2] = initialZ
             self.particles[i][3] = theta
 
