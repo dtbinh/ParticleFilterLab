@@ -74,6 +74,8 @@ class Run:
     def getSensorData(self):
         reading = self.sonar.get_distance()
         print("Sense pressed! Reading is: ", reading)
+        self.particleFilter.recieveCommand(0,reading)
+
 
     def updateDataForParticles(self):
         del self.data[:]
@@ -87,7 +89,7 @@ class Run:
     def run(self):
         # This is an example on how to visualize the pose of our estimated position
         # where our estimate is that the robot is at (x,y,z)=(0.5,0.5,0.1) with heading pi
-        self.virtual_create.set_pose((0.5, 0.5, 0.1), math.pi)
+        self.virtual_create.set_pose((self.particleFilter.randomNumbers[0]/100, self.particleFilter.randomNumbers[1]/100, 0.1), self.particleFilter.randomTheta[0])
 
         # This is an example on how to show particles
         # the format is x,y,z,theta,x,y,z,theta,...
@@ -96,8 +98,9 @@ class Run:
 
         # This is an example on how to estimate the distance to a wall for the given
         # map, assuming the robot is at (0, 0) and has heading math.pi
-        print(self.map.closest_distance((0.5,0.5), math.pi))
 
+        distance = self.map.closest_distance((self.particleFilter.randomNumbers[0]/100, self.particleFilter.randomNumbers[1]/100), self.particleFilter.randomTheta[0])
+        print(self.map.closest_distance((self.particleFilter.randomNumbers[0]/100, self.particleFilter.randomNumbers[1]/100), self.particleFilter.randomTheta[0]))
         # This is an example on how to detect that a button was pressed in V-REP
         while True:
             b = self.virtual_create.get_last_button()
