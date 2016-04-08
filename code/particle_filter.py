@@ -28,8 +28,9 @@ class ParticleFilter:
 
         self.particles = []
         self.particleWeights = []
+        self.numOfParticles = 100
 
-        for i in range(0, 200, 2):
+        for i in range(0, self.numOfParticles*2, 2):
             particle = Particle()
             particle.x = self.randomNumbers[i]/100
             particle.y = self.randomNumbers[i+1]/100
@@ -64,7 +65,7 @@ class ParticleFilter:
         particle_sensor_reading_array = []
 
         # create particle sensor readings and store into an array
-        for i in range(0, 100, 1):
+        for i in range(0, self.numOfParticles, 1):
             # self.particles[i].weight = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].the
             #                                                      )
             # = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
@@ -72,7 +73,7 @@ class ParticleFilter:
                     self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
 
         # calculate the weightSum of all the particles
-        for i in range(0, 100, 1):
+        for i in range(0, self.numOfParticles, 1):
             weightSum += self.computeParticleD(self.scale, self.muD, self.muTheta, self.sigma, sensorReading,
                                                particle_sensor_reading_array[i], 1)
 
@@ -80,13 +81,13 @@ class ParticleFilter:
 
         # calculate the actual weights of each particle
         del self.particleWeights[:]
-        for i in range(0, 100, 1):
-            actualWeight += self.computeParticleD(self.scale, self.muD, self.muTheta, self.sigma, sensorReading,
+        for i in range(0, self.numOfParticles, 1):
+            actualWeight = self.computeParticleD(self.scale, self.muD, self.muTheta, self.sigma, sensorReading,
                                                   particle_sensor_reading_array[i], weightSum)
             self.particles[i].weight = actualWeight
             self.particleWeights.append(actualWeight)
 
-        print("weight sum = ", actualWeight)
+        print("actual weight sum = ", actualWeight)
 
         self.resampleParticles()
 
@@ -94,10 +95,11 @@ class ParticleFilter:
     # //and discard those with low weights. A ‘Particle’ is some structure that has
     # //a weight element w. The sum of all w’s in oldParticles should equal 1.
     def resampleParticles(self):
-    #     # new_particles = []
+        old_particles = self.particles
     #     # cdf = []
     #     # for i in range(0, 100, 1):
     #     #     new_particles.append(self.particles[i])
     #     #     cdf.append(cdf)
-        np.random.choice(self.particles, 100, p=self.particleWeights)
+        self.particles = np.random.choice(self.particles, self.numOfParticles, True, p=self.particleWeights)
+
 
