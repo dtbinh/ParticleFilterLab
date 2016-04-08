@@ -39,7 +39,7 @@ class Run:
 
     def move(self, motorSleepTime, angle):
         print("Forward pressed!")
-        self.theta = angle
+        # self.theta = angle
         startLClicks = 0
         startRClicks = 0
         goal_x = 0.5
@@ -50,35 +50,40 @@ class Run:
         # output_theta = self.pidTheta.update(self.odometry.theta, goal_theta, self.time.time())
         # distance = math.sqrt(math.pow(goal_x - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
         # output_distance = self.pidDistance.update(0, distance, self.time.time())
-        if self.theta == 0:
-            goal_x =
-            goal_y =
+        if angle == 0:
+            # goal_x =
+            # goal_y =
+            self.create.drive_direct(100,100)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0,0)
+            self.particleFilter.recieveCommand(angle, 0.5,self.getSensorData())
 
 
-        elif self.theta < 0:
+        elif angle < 0:
             self.create.drive_direct(50,-50)
             self.time.sleep(motorSleepTime)
             self.create.drive_direct(0,0)
+            self.particleFilter.recieveCommand(angle,0.5,self.getSensorData())
 
         else:
             self.create.drive_direct(-50,50)
             self.time.sleep(motorSleepTime)
             self.create.drive_direct(0,0)
+            self.particleFilter.recieveCommand(angle,0.5,self.getSensorData())
 
-        while True:
-            state = self.create.update()
-            if state is not None:
-                self.odometry.update(state.leftEncoderCounts, state.rightEncoderCounts)
-                goal_theta = math.atan2(goal_y - self.odometry.y, goal_x - self.odometry.x)
-
-                # distance = self.map.closest_distance((self.particleFilter.randomNumbers[0]/100, self.particleFilter.randomNumbers[1]/100), self.particleFilter.randomTheta[0])
-                self.particleFilter.recieveCommand(self.theta, 0.5, self.getSensorData())
-                # self.updateDataForParticles()
-                output_theta = self.pidTheta.update(self.odometry.theta, goal_theta, self.time.time())
-                print("[{},{},{}]".format(self.odometry.x, self.odometry.y, math.degrees(self.odometry.theta)))
-                distance = math.sqrt(math.pow(goal_x - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
-                output_distance = self.pidDistance.update(0, distance, self.time.time())
-                self.create.drive_direct(int(output_theta + output_distance), int(-output_theta + output_distance))
+        self.updateDataForParticles()
+        # while True:
+        #     state = self.create.update()
+        #     if state is not None:
+        #         self.odometry.update(state.leftEncoderCounts, state.rightEncoderCounts)
+        #         goal_theta = math.atan2(goal_y - self.odometry.y, goal_x - self.odometry.x)
+        #         theta = math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta))
+        #         self.particleFilter.recieveCommand(self.theta, 0.5, self.getSensorData())
+        #         output_theta = self.pidTheta.update(self.odometry.theta, goal_theta, self.time.time())
+        #         print("[{},{},{}]".format(self.odometry.x, self.odometry.y, math.degrees(self.odometry.theta)))
+        #         distance = math.sqrt(math.pow(goal_x - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
+        #         output_distance = self.pidDistance.update(0, distance, self.time.time())
+        #         self.create.drive_direct(int(output_theta + output_distance), int(-output_theta + output_distance))
 
 
 
@@ -92,7 +97,6 @@ class Run:
     def updateDataForParticles(self):
         del self.data[:]
         for i in range(0, self.particleFilter.numOfParticles,1):
-            # self.data = [self.particleFilter.randomNumbers[i]/100, self.particleFilter.randomNumbers[i+1]/100, 0.1, self.particleFilter.randomTheta[i],]
             self.data.append(self.particleFilter.particles[i].x)
             self.data.append(self.particleFilter.particles[i].y)
             self.data.append(self.particleFilter.particles[i].z)

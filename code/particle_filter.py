@@ -69,8 +69,7 @@ class ParticleFilter:
             # self.particles[i].weight = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].the
             #                                                      )
             # = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
-            particle_sensor_reading_array.append(
-                    self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
+            particle_sensor_reading_array.append(self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
 
         # calculate the weightSum of all the particles
         for i in range(0, self.numOfParticles, 1):
@@ -90,6 +89,16 @@ class ParticleFilter:
         print("actual weight sum = ", actualWeight)
 
         self.resampleParticles()
+        for i in range(0,100,1):
+            for j in range(0,1000,1):
+                self.particles[i].theta = np.random.normal(_muTheta, self.sigma, 1)
+            for j in range(0,1000,1):
+                distance = np.random.normal(_muDistance, self.sigma, 1)
+            self.particles[i].x = distance * math.cos(self.particles[i].theta)
+            self.particles[i].y = distance * math.sin(self.particles[i].theta)
+            self.particles[i].z = 0.1
+
+
 
     # //Use a roulette wheel to probabilistically duplicate particles with high weights,
     # //and discard those with low weights. A ‘Particle’ is some structure that has
