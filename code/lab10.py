@@ -1,6 +1,7 @@
 import lab10_map
 import create2
 import math
+import numpy as np
 import particle_filter
 import odometry
 import pid_controller
@@ -134,11 +135,11 @@ class Run:
 
                 b = self.virtual_create.get_last_button()
                 if b == self.virtual_create.Button.MoveForward:
-                    self.move(5,0)
+                    self.move(5, 0)
                 elif b == self.virtual_create.Button.TurnLeft:
-                    self.move(4,-math.pi/2)
+                    self.move(4, -math.pi/2)
                 elif b == self.virtual_create.Button.TurnRight:
-                    self.move(4,math.pi/2)
+                    self.move(4, np.pi/2)
                 elif b == self.virtual_create.Button.Sense:
                     self.getSensorData()
 
