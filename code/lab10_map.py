@@ -20,7 +20,7 @@ def ray_line_intersection(ray_origin, ray_direction, point1, point2):
         return None
     t1 = np.cross(v2, v1) / denominator
     t2 = np.dot(v1, v3) / denominator
-    if t1 >= 0.0 and 0.0 <= t2 <= 1.0:
+    if t1.all() >= 0.0 and 0.0 <= t2.all() <= 1.0:
         return [ray_origin + t1 * ray_direction]
     return None
 

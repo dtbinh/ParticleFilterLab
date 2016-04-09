@@ -39,7 +39,6 @@ class Run:
 
 
     def move(self, motorSleepTime, angle):
-        print("Forward pressed!")
         # self.theta = angle
         startLClicks = 0
         startRClicks = 0
@@ -51,26 +50,28 @@ class Run:
         # output_theta = self.pidTheta.update(self.odometry.theta, goal_theta, self.time.time())
         # distance = math.sqrt(math.pow(goal_x - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
         # output_distance = self.pidDistance.update(0, distance, self.time.time())
+
+        # print("angle is ", angle)
         if angle == 0:
             # goal_x =
             # goal_y =
-            self.create.drive_direct(100,100)
+            self.create.drive_direct(100, 100)
             self.time.sleep(motorSleepTime)
-            self.create.drive_direct(0,0)
-            self.particleFilter.recieveCommand(angle, 0.5,self.getSensorData())
+            self.create.drive_direct(0, 0)
+            self.particleFilter.recieveCommand(angle, 0.5, self.sonar.get_distance())
 
 
         elif angle < 0:
             self.create.drive_direct(50,-50)
             self.time.sleep(motorSleepTime)
             self.create.drive_direct(0,0)
-            self.particleFilter.recieveCommand(angle,0.5,self.getSensorData())
+            self.particleFilter.recieveCommand(angle, 0.3, self.sonar.get_distance())
 
         else:
             self.create.drive_direct(-50,50)
             self.time.sleep(motorSleepTime)
             self.create.drive_direct(0,0)
-            self.particleFilter.recieveCommand(angle,0.5,self.getSensorData())
+            self.particleFilter.recieveCommand(angle, 0.3, self.sonar.get_distance())
 
         self.updateDataForParticles()
         # while True:
@@ -90,21 +91,23 @@ class Run:
 
     def getSensorData(self):
         reading = self.sonar.get_distance()
+        self.particleFilter.recieveCommand(0, 0.0, self.sonar.get_distance())
+        self.updateDataForParticles()
         print("Sense pressed! Reading is: ", reading)
-        # self.particleFilter.recieveCommand(0,reading)
-        return reading
+
+        # return reading
 
 
     def updateDataForParticles(self):
         del self.data[:]
-        for i in range(0, self.particleFilter.numOfParticles,1):
+        for i in range(0, self.particleFilter.numOfParticles, 1):
             self.data.append(self.particleFilter.particles[i].x)
             self.data.append(self.particleFilter.particles[i].y)
             self.data.append(self.particleFilter.particles[i].z)
             self.data.append(self.particleFilter.particles[i].theta)
 
+        self.virtual_create.set_pose((self.particleFilter.particles[i].x, self.particleFilter.particles[i].y,0.1), self.particleFilter.particles[i].theta)
         self.virtual_create.set_point_cloud(self.data)
-
 
     def run(self):
         self.create.start()
@@ -137,7 +140,7 @@ class Run:
                 if b == self.virtual_create.Button.MoveForward:
                     self.move(5, 0)
                 elif b == self.virtual_create.Button.TurnLeft:
-                    self.move(4, -math.pi/2)
+                    self.move(4, -np.pi/2)
                 elif b == self.virtual_create.Button.TurnRight:
                     self.move(4, np.pi/2)
                 elif b == self.virtual_create.Button.Sense:

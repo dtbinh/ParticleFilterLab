@@ -11,6 +11,7 @@ class Particle:
         self.z = 0.1
         self.theta = 0
         self.actualWeight = 0
+        self.previousProbabiltiy  = 1/36
 
 class ParticleFilter:
     def __init__(self):
@@ -25,6 +26,8 @@ class ParticleFilter:
 
         self.randomNumbers = random.sample(range(300), 200)
         self.randomTheta = random.sample(range(360), 200)
+        for i in range(0, 200, 1):
+            self.randomTheta[i] = math.radians(self.randomTheta[i])
 
         self.particles = []
         self.particleWeights = []
@@ -47,7 +50,9 @@ class ParticleFilter:
     def computeParticleD(self, scale, muD, muTheta, sigma, x, sensorReading, weightSum):
         # for each particle
         conditional_probabilty = self.findPDF(x, sensorReading, sigma)
+        print("conditional prob = ", conditional_probabilty, ", previous probability = ", self.previousProbability)
         weight = conditional_probabilty * self.previousProbability
+        # self.previousProbability = conditional_probabilty
         return weight / weightSum
 
 
@@ -59,9 +64,7 @@ class ParticleFilter:
         self.muTheta = _muTheta
         self.muD = _muDistance
         print("recieved command")
-        # self.commandGiven = True
         weightSum = 0
-        actualWeight = 0
         particle_sensor_reading_array = []
 
         # create particle sensor readings and store into an array
@@ -69,7 +72,11 @@ class ParticleFilter:
             # self.particles[i].weight = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].the
             #                                                      )
             # = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
-            particle_sensor_reading_array.append(self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
+            tempValue = self.map.closest_distance((self.particles[i].x, self.particles[i].y),self.particles[i].theta)
+            # print("temp value", tempValue)
+            # particle_sensor_reading_array.append(self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
+            particle_sensor_reading_array.append(tempValue)
+
 
         # calculate the weightSum of all the particles
         for i in range(0, self.numOfParticles, 1):
@@ -86,7 +93,7 @@ class ParticleFilter:
             self.particles[i].weight = actualWeight
             self.particleWeights.append(actualWeight)
 
-        print("actual weight sum = ", actualWeight)
+        # print("actual weight sum = ", actualWeight)
 
         self.resampleParticles()
         for i in range(0,100,1):
@@ -94,8 +101,9 @@ class ParticleFilter:
                 self.particles[i].theta = np.random.normal(_muTheta, self.sigma, 1)
             for j in range(0,1000,1):
                 distance = np.random.normal(_muDistance, self.sigma, 1)
-            self.particles[i].x = distance * math.cos(self.particles[i].theta)
-            self.particles[i].y = distance * math.sin(self.particles[i].theta)
+
+            self.particles[i].x = distance * np.cos(self.particles[i].theta)
+            self.particles[i].y = distance * np.sin(self.particles[i].theta)
             self.particles[i].z = 0.1
 
 
@@ -104,11 +112,6 @@ class ParticleFilter:
     # //and discard those with low weights. A ‘Particle’ is some structure that has
     # //a weight element w. The sum of all w’s in oldParticles should equal 1.
     def resampleParticles(self):
-        old_particles = self.particles
-    #     # cdf = []
-    #     # for i in range(0, 100, 1):
-    #     #     new_particles.append(self.particles[i])
-    #     #     cdf.append(cdf)
-        self.particles = np.random.choice(self.particles, self.numOfParticles, True, p=self.particleWeights)
+        self.particles = np.random.choice(self.particles, self.numOfParticles, p = self.particleWeights)
 
 
