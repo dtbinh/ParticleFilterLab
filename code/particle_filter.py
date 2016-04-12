@@ -1,8 +1,8 @@
 import lab10_map
 import math
 import random
-from array import *
 import numpy as np
+# import spicy as sp
 
 class Particle:
     def __init__(self):
@@ -13,6 +13,7 @@ class Particle:
         self.actualWeight = 1/100
         self.previousProbabiltiy  = 1/36
         self.sensorReading = 0
+        self.state = 0
 
 class ParticleFilter:
     def __init__(self):
@@ -21,6 +22,8 @@ class ParticleFilter:
 
         self.muTheta = 0
         self.sigma = 0.05
+        self.distanceVariance = math.sqrt(0.05)  #distance variance is 5 cm
+        self.directionVariance = math.sqrt(5)    #direction variance is 5 degrees
         self.muD = 0.5  # mean
         self.scale = 100
         self.previousProbability = 1 / 36
@@ -45,6 +48,7 @@ class ParticleFilter:
 
     # x = fake sensor reading, mu = actual sensor reading
     def findPDF(self, x, mu, sigma):
+        # print(sp.stats.norm.pdf(x, mu, sigma))
         probability = (1 / (sigma * math.sqrt(2 * math.pi))) * math.pow(math.exp(-(x - mu)), 2) / (
             2 * math.pow(sigma, 2))
         return probability
@@ -71,18 +75,27 @@ class ParticleFilter:
 
         # move particles
         for i in range(0,100,1):
-            for j in range(0,1000,1):
-                tempVal = np.random.normal(_muTheta, self.sigma, 1)
-                tempVal2 = np.random.normal(_muDistance, self.sigma, 1)
 
+            # generate noise for theta using the normal random variable sample
             for j in range(0,1000,1):
-                self.particles[i].theta = np.random.normal(0, tempVal, 1)
-                # print(self.particles[i].theta)
-            for j in range(0,1000,1):
-                distance = np.random.normal(0, tempVal2, 1)
+                thetaNoise = np.random.normal(0, self.directionVariance, 1)
 
-            self.particles[i].x = distance + np.cos(self.particles[i].theta)
-            self.particles[i].y = distance + np.sin(self.particles[i].theta)
+            # generate noise for distance using the normal random variable sample
+            for j in range(0,1000,1):
+                distanceNoise = np.random.normal(0, self.distanceVariance, 1)
+
+            # Theta prime
+            actualTheta = _muTheta + thetaNoise
+
+            # Distance prime
+            actualDistance = _muDistance + distanceNoise
+
+            self.particles[i].theta = actualTheta
+
+            # Xt+1 = Xt + D`cos(theta`)
+            self.particles[i].x = self.particles[i].x + actualDistance * np.cos(self.particles[i].theta)
+            # Yt+1 = Yt + D`sin(theta`)
+            self.particles[i].y = self.particles[i].y + actualDistance * np.sin(self.particles[i].theta)
             self.particles[i].z = 0.1
 
         # # create particle sensor readings and store into an array
