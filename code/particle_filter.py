@@ -10,8 +10,9 @@ class Particle:
         self.y = 0
         self.z = 0.1
         self.theta = 0
-        self.actualWeight = 0
+        self.actualWeight = 1/100
         self.previousProbabiltiy  = 1/36
+        self.sensorReading = 0
 
 class ParticleFilter:
     def __init__(self):
@@ -26,8 +27,9 @@ class ParticleFilter:
 
         self.randomNumbers = random.sample(range(300), 200)
         self.randomTheta = random.sample(range(360), 200)
-        for i in range(0, 200, 1):
-            self.randomTheta[i] = math.radians(self.randomTheta[i])
+
+        # for i in range(0, 100, 1):
+        #     self.randomTheta[i] = math.radians(self.randomTheta[i])
 
         self.particles = []
         self.particleWeights = []
@@ -48,9 +50,8 @@ class ParticleFilter:
         return probability
 
     def computeParticleD(self, scale, muD, muTheta, sigma, x, sensorReading, weightSum):
-        # for each particle
         conditional_probabilty = self.findPDF(x, sensorReading, sigma)
-        print("conditional prob = ", conditional_probabilty, ", previous probability = ", self.previousProbability)
+        # print("conditional prob = ", conditional_probabilty, ", previous probability = ", self.previousProbability)
         weight = conditional_probabilty * self.previousProbability
         # self.previousProbability = conditional_probabilty
         return weight / weightSum
@@ -61,50 +62,60 @@ class ParticleFilter:
 
     def recieveCommand(self, _muTheta, _muDistance, sensorReading):
         # 90 = turn right, -90 = turn left, 0 = move forward
-        self.muTheta = _muTheta
-        self.muD = _muDistance
+        # self.muTheta = _muTheta
+        # self.muD = _muDistance
         print("recieved command")
         weightSum = 0
-        particle_sensor_reading_array = []
+        tempVal = 0
+        tempVal2 = 0
 
-        # create particle sensor readings and store into an array
-        for i in range(0, self.numOfParticles, 1):
-            # self.particles[i].weight = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].the
-            #                                                      )
-            # = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
-            tempValue = self.map.closest_distance((self.particles[i].x, self.particles[i].y),self.particles[i].theta)
-            # print("temp value", tempValue)
-            # particle_sensor_reading_array.append(self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
-            particle_sensor_reading_array.append(tempValue)
-
-
-        # calculate the weightSum of all the particles
-        for i in range(0, self.numOfParticles, 1):
-            weightSum += self.computeParticleD(self.scale, self.muD, self.muTheta, self.sigma, sensorReading,
-                                               particle_sensor_reading_array[i], 1)
-
-        print("weight sum = ", weightSum)
-
-        # calculate the actual weights of each particle
-        del self.particleWeights[:]
-        for i in range(0, self.numOfParticles, 1):
-            actualWeight = self.computeParticleD(self.scale, self.muD, self.muTheta, self.sigma, sensorReading,
-                                                  particle_sensor_reading_array[i], weightSum)
-            self.particles[i].weight = actualWeight
-            self.particleWeights.append(actualWeight)
-
-        # print("actual weight sum = ", actualWeight)
-
-        self.resampleParticles()
+        # move particles
         for i in range(0,100,1):
             for j in range(0,1000,1):
-                self.particles[i].theta = np.random.normal(_muTheta, self.sigma, 1)
-            for j in range(0,1000,1):
-                distance = np.random.normal(_muDistance, self.sigma, 1)
+                tempVal = np.random.normal(_muTheta, self.sigma, 1)
+                tempVal2 = np.random.normal(_muDistance, self.sigma, 1)
 
-            self.particles[i].x = distance * np.cos(self.particles[i].theta)
-            self.particles[i].y = distance * np.sin(self.particles[i].theta)
+            for j in range(0,1000,1):
+                self.particles[i].theta = np.random.normal(0, tempVal, 1)
+                # print(self.particles[i].theta)
+            for j in range(0,1000,1):
+                distance = np.random.normal(0, tempVal2, 1)
+
+            self.particles[i].x = distance + np.cos(self.particles[i].theta)
+            self.particles[i].y = distance + np.sin(self.particles[i].theta)
             self.particles[i].z = 0.1
+
+        # # create particle sensor readings and store into an array
+        # for i in range(0, self.numOfParticles, 1):
+        #     # self.particles[i].weight = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].the
+        #     #                                                      )
+        #     # = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
+        #     self.particles[i].sensorReading = self.map.closest_distance((self.particles[i].x, self.particles[i].y),self.particles[i].theta)
+        #     # print("temp value", self.particles[i].sensorReading)
+        #     # particle_sensor_reading_array.append(self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta))
+        #     # particle_sensor_reading_array.append(tempValue)
+        #
+        #
+        # # calculate the weightSum of all the particles
+        # for i in range(0, self.numOfParticles, 1):
+        #     weightSum += self.computeParticleD(self.scale, _muDistance, _muTheta, self.sigma, sensorReading,
+        #                                        self.particles[i].sensorReading, 1)
+        #
+        # print("weight sum = ", weightSum)
+        #
+        # # calculate the actual weights of each particle
+        # del self.particleWeights[:]
+        # for i in range(0, self.numOfParticles, 1):
+        #     actualWeight = self.computeParticleD(self.scale, _muDistance, _muTheta, self.sigma, sensorReading,
+        #                                           self.particles[i].sensorReading, weightSum)
+        #     self.particles[i].weight = actualWeight
+        #     self.particleWeights.append(actualWeight)
+        #
+        # # print("actual weight sum = ", actualWeight)
+        #
+        #
+        #
+        # self.resampleParticles()
 
 
 
