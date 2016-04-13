@@ -91,12 +91,39 @@ class ParticleFilter:
             actualDistance = _muDistance + distanceNoise
 
             self.particles[i].theta = actualTheta
+            self.particles[i].z = 0.1
 
             # Xt+1 = Xt + D`cos(theta`)
-            self.particles[i].x = self.particles[i].x + actualDistance * np.cos(self.particles[i].theta)
+            xPossible = self.particles[i].x + actualDistance * np.cos(self.particles[i].theta)
+            # check for map boundaries... Need to implement method to prevent all obstacles than just outer boundaries:
+            if xPossible < 0.0:
+                xPossible = 0.0
+            elif xPossible > 3.0:
+                xPossible = 3.0
+
+            self.particles[i].x = xPossible
+
             # Yt+1 = Yt + D`sin(theta`)
-            self.particles[i].y = self.particles[i].y + actualDistance * np.sin(self.particles[i].theta)
-            self.particles[i].z = 0.1
+            yPossible = self.particles[i].y + actualDistance * np.sin(self.particles[i].theta)
+            if yPossible < 0.0:
+                yPossible = 0.0
+            elif yPossible > 3.0:
+                yPossible = 3.0
+
+            self.particles[i].y = yPossible
+
+            # compute posterior probability
+            
+
+
+            # # If the particle is literally inside a wall, reduce the distance traveled
+            # wallDist = self.map.closest_distance((xPossible, yPossible), self.particles[i].theta)
+            # if wallDist < 0.05:
+            #     self.particles[i].x = self.particles[i].x + (actualDistance * np.cos(self.particles[i].theta) - 0.1)
+            #     self.particles[i].y = self.particles[i].y + (actualDistance * np.sin(self.particles[i].theta) - 0.1)
+
+
+
 
         # # create particle sensor readings and store into an array
         # for i in range(0, self.numOfParticles, 1):

@@ -20,7 +20,7 @@
     <favorites_list name="code" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.88013136">
+    <splitter split-orientation="horizontal" split-proportion="0.5299426">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="lab10_map.py" pinned="false" current-in-tab="false">
@@ -49,7 +49,7 @@
             <entry file="file://$PROJECT_DIR$/lab10.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="200" column="63" selection-start-line="200" selection-start-column="63" selection-end-line="200" selection-end-column="63" />
+                  <caret line="102" column="57" selection-start-line="102" selection-start-column="57" selection-end-line="102" selection-end-column="57" />
                   <folding>
                     <element signature="e#0#16#0" expanded="true" />
                   </folding>
@@ -61,7 +61,7 @@
             <entry file="file://$USER_HOME$/Desktop/JerryAndAlbertLab5/lab5.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="49" column="64" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="64" />
+                  <caret line="64" column="22" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -70,8 +70,8 @@
           <file leaf-file-name="particle_filter.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/particle_filter.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.7345361">
-                  <caret line="96" column="31" selection-start-line="96" selection-start-column="31" selection-end-line="96" selection-end-column="31" />
+                <state vertical-scroll-proportion="0.6713917">
+                  <caret line="115" column="12" selection-start-line="115" selection-start-column="12" selection-end-line="115" selection-end-column="12" />
                   <folding>
                     <element signature="e#0#16#0" expanded="true" />
                   </folding>
@@ -107,7 +107,7 @@
             <entry file="file://$PROJECT_DIR$/../../teamFirstPlace/code/teamFirstPlaceRobot.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="45" column="25" selection-start-line="45" selection-start-column="25" selection-end-line="57" selection-end-column="79" />
+                  <caret line="213" column="31" selection-start-line="213" selection-start-column="0" selection-end-line="214" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#14#0" expanded="true" />
                   </folding>
@@ -115,21 +115,21 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="lab6b_solution.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="lab6b_solution.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/../../code/lab6b_solution.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="39" column="25" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="25" />
+                <state vertical-scroll-proportion="0.96649486">
+                  <caret line="54" column="48" selection-start-line="54" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="lab10.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="lab10.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/lab10.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.61340207">
-                  <caret line="199" column="124" selection-start-line="199" selection-start-column="124" selection-end-line="199" selection-end-column="124" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#16#0" expanded="true" />
                   </folding>
@@ -267,7 +267,7 @@
     <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.notifications" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../code/lab6b_solution.py" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/LJ/Documents/CS 445/ParticleFilterLab/code/lab10.py" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/LJ/Documents/CS 445/ParticleFilterLab/code/lab10_map.py" />
     <property name="FullScreen" value="true" />
   </component>
   <component name="RunManager">
@@ -788,37 +788,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../code/lab6b_solution.py">
+    <entry file="file://$PROJECT_DIR$/lab10_map.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="25" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../teamFirstPlace/code/teamFirstPlaceRobot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="45" column="25" selection-start-line="45" selection-start-column="25" selection-end-line="57" selection-end-column="79" />
+          <caret line="36" column="21" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="21" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pid_controller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="26" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/JerryAndAlbertLab5/lab5.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="49" column="64" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="64" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -830,20 +806,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lab10_map.py">
+    <entry file="file://$PROJECT_DIR$/pid_controller.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="21" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="21" />
+          <caret line="20" column="26" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../teamFirstPlace/code/teamFirstPlaceRobot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="213" column="31" selection-start-line="213" selection-start-column="0" selection-end-line="214" selection-end-column="0" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/JerryAndAlbertLab5/lab5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="64" column="22" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../code/lab6b_solution.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.96649486">
+          <caret line="54" column="48" selection-start-line="54" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lab10.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="200" column="63" selection-start-line="200" selection-start-column="63" selection-end-line="200" selection-end-column="63" />
+          <caret line="102" column="57" selection-start-line="102" selection-start-column="57" selection-end-line="102" selection-end-column="57" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
@@ -852,8 +852,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/particle_filter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7345361">
-          <caret line="96" column="31" selection-start-line="96" selection-start-column="31" selection-end-line="96" selection-end-column="31" />
+        <state vertical-scroll-proportion="0.6713917">
+          <caret line="115" column="12" selection-start-line="115" selection-start-column="12" selection-end-line="115" selection-end-column="12" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>

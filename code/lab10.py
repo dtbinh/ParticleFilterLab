@@ -87,6 +87,8 @@ class Run:
         goal_y = 0.5
         goal_theta = angle
         pos = False
+        distance =0
+
 
         # Set the destination to be half a meter in front of the create
         if angle == 0:
@@ -94,28 +96,39 @@ class Run:
             # goal_y = 0
             # setDistance = math.sqrt(math.pow(goal_x, 2) + math.pow(goal_y, 2))
 
-            # self.create.drive_direct(100, 100)
-            # self.time.sleep(motorSleepTime)
-            # self.create.drive_direct(0, 0)
+            self.create.drive_direct(100, 100)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0, 0)
             # Just for testing
             self.particleFilter.recieveCommand(angle, 0.5, self.sonar.get_distance())
         # # Set the destination theta to be 90 degrees
-        # elif angle < 0:
-        #     pos = False
-        #     goal_theta = math.pi / 2
-        #     # self.create.drive_direct(50,-50)
-        #     # self.time.sleep(motorSleepTime)
-        #     # self.create.drive_direct(0,0)
-        #     # self.particleFilter.recieveCommand(angle, 0.3, self.sonar.get_distance())
+        elif angle > 0:
+            # startTime = self.time.time()
+            self.create.drive_direct(50,-50)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0,0)
+            # while True:
+            #     state = self.create.update()
+            #     if state is not None:
+            #         self.odometry.update(state.leftEncoderCounts, state.rightEncoderCounts)
+            #         # distance =
+            #
+            #
+            #         # if startTime == (startTime + 2.5):
+            #             self.create.drive_direct(0,0)
+            #
+            #             False
+            #             break
+
+
+            self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
         # # Set the destination theta to be -90 degrees
-        # elif angle > 0:
-        #     pos = True
-        #     goal_theta = -math.pi / 2
-        #     print("hey")
-            # self.create.drive_direct(-50,50)
-            # self.time.sleep(motorSleepTime)
-            # self.create.drive_direct(0,0)
-            # self.particleFilter.recieveCommand(angle, 0.3, self.sonar.get_distance())
+        elif angle < 0:
+
+            self.create.drive_direct(-50,50)
+            self.time.sleep(motorSleepTime)
+            self.create.drive_direct(0,0)
+            self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
 
         # if angle != 0:
         #     self.turnCreate(goal_theta, pos)
@@ -208,9 +221,9 @@ class Run:
             if b == self.virtual_create.Button.MoveForward:
                 self.move(5, 0)
             elif b == self.virtual_create.Button.TurnLeft:
-                self.move(4, math.pi / 2)
+                self.move(3.75, math.pi / 2)
             elif b == self.virtual_create.Button.TurnRight:
-                self.move(4, -math.pi / 2)
+                self.move(3.75, -math.pi / 2)
             elif b == self.virtual_create.Button.Sense:
                 self.getSensorData()
 
