@@ -1,8 +1,9 @@
+import scipy
+
 import lab10_map
 import math
 import random
-import numpy as np
-# import spicy as sp
+import numpy as np# import scipy
 
 class Particle:
     def __init__(self):
@@ -30,6 +31,7 @@ class ParticleFilter:
 
         self.randomNumbers = random.sample(range(300), 200)
         self.randomTheta = random.sample(range(360), 200)
+        scipy.stats.norm.pdf()
 
         # for i in range(0, 100, 1):
         #     self.randomTheta[i] = math.radians(self.randomTheta[i])
@@ -112,17 +114,19 @@ class ParticleFilter:
 
             self.particles[i].y = yPossible
 
-            # compute posterior probability
-            
+            vLocation = self.map.closest_distance((self.particles[i].x, self.particles[i].y))
+            self.findPDF(sensorReading, sensorReading, self.sigma)
 
+            # compute posterior probability
 
             # # If the particle is literally inside a wall, reduce the distance traveled
             # wallDist = self.map.closest_distance((xPossible, yPossible), self.particles[i].theta)
             # if wallDist < 0.05:
             #     self.particles[i].x = self.particles[i].x + (actualDistance * np.cos(self.particles[i].theta) - 0.1)
             #     self.particles[i].y = self.particles[i].y + (actualDistance * np.sin(self.particles[i].theta) - 0.1)
-
-
+        # for j in range(0,1000,1):
+        #    sensorNoise = np.random.normal(sensorReading, self.sigma, 1)
+        #
 
 
         # # create particle sensor readings and store into an array
