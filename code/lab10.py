@@ -67,16 +67,17 @@ class Run:
                     self.create.drive_direct(-int(output_theta), int(output_theta))
 
 
-                distance = math.sqrt(math.pow(0 - self.odometry.x, 2) + math.pow(0 - self.odometry.y, 2))
+                distance = math.sqrt(math.pow(goal_y - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
                 output_distance = self.pidDistance.update(0, distance, self.time.time())
-                # print(output_distance)
-                if output_theta < 10:
+                # print(output_theta)
+                # if (output_theta < 5 and goalTheta > 0) or (output_theta > 5 and  < 0):
+                if output_theta < 5:
                     actualTheta = initialTheta - output_theta
-                    # actualDistance = initialPos + distance
+                    actualDistance = initialPos + distance
                     # print("distance = ", output_distance)
-                    print(actualTheta)
+                    # print(actualTheta)
                     self.create.drive_direct(0, 0)
-                    self.particleFilter.recieveCommand(actualTheta, output_distance, self.sonar.get_distance())
+                    self.particleFilter.recieveCommand(actualTheta, actualDistance, self.sonar.get_distance())
                     break
 
         # print("goal t: ", goal_Theta)
