@@ -15,19 +15,15 @@ class Particle:
         self.yTplusOne = 0
         self.actualWeight = 1/100
         self.weight = 1/100
-        self.previousProbabiltiy  = 1/36
-        self.state = 0
+        self.previousProbabiltiy  = 1/100
 
 class ParticleFilter:
     def __init__(self):
         self.commandGiven = False
         self.map = lab10_map.Map("lab10.map")
-
-        self.muTheta = 0
         self.sigma = math.sqrt(0.05)
         self.distanceVariance = math.sqrt(0.05)  #distance variance is 5 cm
         self.directionVariance = math.sqrt(5)    #direction variance is 5 degrees
-        self.muD = 0.5  # mean
         self.scale = 100
 
         self.randomNumbers = random.sample(range(300), 200)
@@ -215,8 +211,6 @@ class ParticleFilter:
 
             # self.particles[k].x = self.particles[k].xTplusOne
             # self.particles[k].y = self.particles[k].yTplusOne
-
-
             print(self.particles[k].x, self.particles[k].y, self.particles[k].theta)
         # self.particles = np.random.choice(self.particles, self.numOfParticles, p = self.particleWeights)
 
