@@ -206,9 +206,6 @@ class Run:
         # This is an example on how to estimate the distance to a wall for the given
         # map, assuming the robot is at (0, 0) and has heading math.pi
 
-        distance = self.map.closest_distance(
-                (self.particleFilter.randomNumbers[0] / 100, self.particleFilter.randomNumbers[1] / 100),
-                self.particleFilter.randomTheta[0])
 
         print(self.particleFilter.particles[0].x, self.particleFilter.particles[0].y, self.particleFilter.particles[0].theta)
         print(self.map.closest_distance((self.particleFilter.particles[0].x, self.particleFilter.particles[0].y),self.particleFilter.particles[0].theta))
@@ -221,9 +218,9 @@ class Run:
             if b == self.virtual_create.Button.MoveForward:
                 self.move(5, 0)
             elif b == self.virtual_create.Button.TurnLeft:
-                self.move(3.75, math.pi / 2)
+                self.move(3.6, math.pi / 2)
             elif b == self.virtual_create.Button.TurnRight:
-                self.move(3.75, -math.pi / 2)
+                self.move(3.6, -math.pi / 2)
             elif b == self.virtual_create.Button.Sense:
                 self.getSensorData()
 
