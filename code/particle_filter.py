@@ -21,9 +21,9 @@ class ParticleFilter:
     def __init__(self):
         self.commandGiven = False
         self.map = lab10_map.Map("lab10.map")
-        self.sigma = math.sqrt(0.05)
-        self.distanceVariance = math.sqrt(0.05)  #distance variance is 5 cm
-        self.directionVariance = math.sqrt(5)    #direction variance is 5 degrees
+        self.sigma = 0.05
+        self.distanceVariance = 0.05 #math.sqrt(0.05)  #distance variance is 5 cm
+        self.directionVariance = 0.05 #math.sqrt(0.05)    #direction variance is 5 degrees
         self.scale = 100
 
         self.randomNumbers = random.sample(range(300), 200)
@@ -40,25 +40,11 @@ class ParticleFilter:
             particle = Particle()
             particle.x = self.randomNumbers[i]/100
             particle.y = self.randomNumbers[i+1]/100
-            particle.theta = self.randomTheta[i]
+            particle.theta = math.radians(self.randomTheta[i])
+            print("theta = ", particle.theta)
+
             # tuple = (, self.randomNumbers[i + 1] / 100, 0.1, self.randomTheta[i])
             self.particles.append(particle)
-
-    # x = fake sensor reading, mu = actual sensor reading
-    # def findPDF(self, x, mu, sigma):
-    #     # print(sp.stats.norm.pdf(x, mu, sigma))
-    #     probability = (1 / (sigma * math.sqrt(2 * math.pi))) * math.pow(math.exp(-(x - mu)), 2) / (
-    #         2 * math.pow(sigma, 2))
-    #     return probability
-
-    # def computeParticleD(self, scale, muD, muTheta, sigma, x, sensorReading, weightSum):
-    #     conditional_probabilty = self.findPDF(x, sensorReading, sigma)
-    #     # print("conditional prob = ", conditional_probabilty, ", previous probability = ", self.previousProbability)
-    #     weight = conditional_probabilty * self.previousProbability
-    #     # self.previousProbability = conditional_probabilty
-    #     return weight / weightSum
-    #
-
 
     # need to find the probability of a particle at each position given a sensor reading at that postition (use the map.closest_distance)
 
@@ -70,23 +56,26 @@ class ParticleFilter:
 
 
         # move particles
-        for i in range(0, self.numOfParticles,1):
+        for i in range(0, self.numOfParticles, 1):
 
             # generate noise for theta using the normal random variable sample
-            for j in range(0,1000,1):
+            for j in range(0, 1000, 1):
                 thetaNoise = np.random.normal(0, self.directionVariance, 1)
 
             # generate noise for distance using the normal random variable sample
-            for j in range(0,1000,1):
+            for j in range(0, 1000, 1):
                 distanceNoise = np.random.normal(0, self.distanceVariance, 1)
+            # print("noise distance = ", distanceNoise)
 
+            # print("t = ", _muTheta)
             # Theta prime
             actualTheta = _muTheta + thetaNoise
 
             # Distance prime
             actualDistance = _muDistance + distanceNoise
 
-            self.particles[i].theta = actualTheta
+            self.particles[i].theta = self.particles[i].theta + actualTheta
+            # print("theta = ", self.particles[i].theta)
             self.particles[i].z = 0.1
 
             # Xt+1 = Xt + D`cos(theta`)
@@ -116,24 +105,29 @@ class ParticleFilter:
             vLocation = self.map.closest_distance((self.particles[i].x, self.particles[i].y), self.particles[i].theta)
 
             # self.particles[i].weight = scipy.stats.norm.pdf(sensorReading, vLocation, self.sigma) * self.particles[i].previousProbabiltiy
-            self.particles[i].weight = np.log(scipy.stats.norm.pdf(sensorReading, vLocation, self.sigma) * self.particles[i].previousProbabiltiy)
-
+            self.particles[i].weight = math.log(scipy.stats.norm.pdf(sensorReading, vLocation, self.sigma) * self.particles[i].previousProbabiltiy)
+            print("P    w = ", weightSum)
+            print(" weight est = ", self.particles[i].weight)
             weightSum += self.particles[i].weight
 
-        print(weightSum)
+            # print("theta new = ", self.particles[i].theta)
+        print("w = ", weightSum)
+        # print(self.particles[0].x, self.particles[0].y, self.particles[0].theta)
         testValue = 0
         del self.particleWeights[:]
+
+
+
 
         for i in range(0, self.numOfParticles, 1):
             self.particles[i].previousProbabiltiy = self.particles[i].actualWeight
             self.particles[i].actualWeight = self.particles[i].weight / weightSum
 
-            # print(self.particles[i].actualWeight)
             self.particleWeights.append(self.particles[i].actualWeight)
             testValue += self.particles[i].actualWeight
-            # print(self.particles[i].previousProbabiltiy)
-
-        print(testValue)
+            print("prob = ", self.particles[i].actualWeight)
+            print("asdfasdfasd = ", self.particleWeights[i])
+        print("prob sum = ", testValue)
         self.resampleParticles()
             # compute posterior probability
 
@@ -184,33 +178,35 @@ class ParticleFilter:
     # //and discard those with low weights. A ‘Particle’ is some structure that has
     # //a weight element w. The sum of all w’s in oldParticles should equal 1.
     def resampleParticles(self):
-        new_particles = []
-        cdf = []
-        cdf.append(self.particles[0].actualWeight)
-
-        for i in range(1, len(self.particles), 1):
-            cdf.append(cdf[i-1] + self.particles[i].actualWeight)
-
-        i = 0
-        u = np.random.uniform(0, 100) * 1/self.numOfParticles
-        print(u)
-        for j in range(0, len(self.particles), 1):
-            while u > cdf[i]:
-                if i == 99:
-                    break
-                i += 1
-
-            p = self.particles[i]
-            p.weight = 1/len(self.particles)
-
-            new_particles.append(p)
-
-            u += 1/len(self.particles)
-        self.particles = new_particles
+        # new_particles = []
+        # cdf = []
+        # cdf.append(self.particles[0].actualWeight)
+        # print(len(self.particles))
+        # for i in range(1, len(self.particles), 1):
+        #     cdf.append(cdf[i-1] + self.particles[i].actualWeight)
+        #
+        # i = 0
+        # u = random.uniform(0.0, 1.0) #* 1/self.numOfParticles
+        # print(u)
+        # for j in range(0, len(self.particles), 1):
+        #     while u > cdf[i]:
+        #         if i == (len(self.particles) - 1):
+        #             break
+        #         i += 1
+        #
+        #     p = self.particles[i]
+        #     p.weight = 1/len(self.particles)
+        #
+        #     new_particles.append(p)
+        #
+        #     u += 1/len(self.particles)
+        #
+        # self.particles = new_particles
         # for k in range(0, self.numOfParticles, 1):
-
+        #     print("actual new weight = ",self.particles[k].actualWeight)
             # self.particles[k].x = self.particles[k].xTplusOne
             # self.particles[k].y = self.particles[k].yTplusOne
             # print(self.particles[k].x, self.particles[k].y, self.particles[k].theta)
-        # self.particles = np.random.choice(self.particles, self.numOfParticles, p = self.particleWeights)
+        self.particles = np.random.choice(self.particles, self.numOfParticles, p =self.particleWeights)
+        # print("length = ",len(self.particles))
 
