@@ -207,10 +207,10 @@ class ParticleFilter:
 
             u += 1/len(self.particles)
         self.particles = new_particles
-        for k in range(0, self.numOfParticles, 1):
+        # for k in range(0, self.numOfParticles, 1):
 
             # self.particles[k].x = self.particles[k].xTplusOne
             # self.particles[k].y = self.particles[k].yTplusOne
-            print(self.particles[k].x, self.particles[k].y, self.particles[k].theta)
+            # print(self.particles[k].x, self.particles[k].y, self.particles[k].theta)
         # self.particles = np.random.choice(self.particles, self.numOfParticles, p = self.particleWeights)
 

@@ -39,19 +39,46 @@ class Run:
             self.data.append(self.particleFilter.particles[i].z)
             self.data.append(self.particleFilter.particles[i].theta)
 
-    def turnCreate(self, goalTheta, state, pos):
-        self.odometry.update(state.leftEncoderCounts, state.rightEncoderCounts)
-        theta = math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta))
-        output_theta = self.pidTheta.update(self.odometry.theta, goalTheta, self.time.time())
-        print("out theta: ", output_theta)
-        # improved version 2: fuse with velocity controller
-        if pos:
-            self.create.drive_direct(int(output_theta), int(-output_theta))
-        else:
-            if self.scan_counter >= 0:
-                self.create.drive_direct(-int(output_theta), int(output_theta))
-            else:
-                self.create.drive_direct(int(output_theta), -int(output_theta))
+    def turnCreate(self, goalTheta, goal_x, goal_y):
+        start_time = self.time.time()
+        initialPos = math.sqrt(math.pow(self.odometry.x, 2) + math.pow(self.odometry.y, 2))
+        initialTheta = math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta))
+        initX = self.odometry.x
+        initY = self.odometry.y
+        print ("goal theta = ", initialTheta)
+        goalTheta = initialTheta + goalTheta
+        print (" new goal theta = ", goalTheta)
+
+
+        while True:
+            state = self.create.update()
+            if state is not None:
+                self.odometry.update(state.leftEncoderCounts, state.rightEncoderCounts)
+                # goalTheta = math.atan2(goal_y - self.odometry.y, goal_x - self.odometry.x)
+                # goalTheta = goalTheta - initialTheta
+
+                if goalTheta > 0:
+                    output_theta = self.pidTheta.update(self.odometry.theta, goalTheta, self.time.time())
+                    # print(output_theta)
+                    self.create.drive_direct(int(output_theta), int(-output_theta))
+                else:
+                    output_theta = -self.pidTheta.update(self.odometry.theta, goalTheta, self.time.time())
+                    # print(output_theta)
+                    self.create.drive_direct(-int(output_theta), int(output_theta))
+
+
+                distance = math.sqrt(math.pow(0 - self.odometry.x, 2) + math.pow(0 - self.odometry.y, 2))
+                output_distance = self.pidDistance.update(0, distance, self.time.time())
+                # print(output_distance)
+                if output_theta < 10:
+                    actualTheta = initialTheta - output_theta
+                    # actualDistance = initialPos + distance
+                    # print("distance = ", output_distance)
+                    print(actualTheta)
+                    self.create.drive_direct(0, 0)
+                    self.particleFilter.recieveCommand(actualTheta, output_distance, self.sonar.get_distance())
+                    break
+
         # print("goal t: ", goal_Theta)
         # theta = math.atan2(self.odometry.y, self.odometry.x)
         #
@@ -78,13 +105,34 @@ class Run:
         #             self.create.drive_direct(0, 0)
         #             break
 
+    # Move create a half meter forward and return distance traveled
+    def moveForward(self, goal_x, goal_y):
+        start_time = self.time.time()
+        initialPos = math.sqrt(math.pow(goal_x - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
+
+        while True:
+            state = self.create.update()
+            if state is not None:
+                self.odometry.update(state.leftEncoderCounts, state.rightEncoderCounts)
+                goal_theta = math.atan2(goal_y - self.odometry.y, goal_x - self.odometry.x)
+                output_theta = self.pidTheta.update(self.odometry.theta, goal_theta, self.time.time())
+
+                # improved version 2: fuse with velocity controller
+                distance = math.sqrt(math.pow(goal_x - self.odometry.x, 2) + math.pow(goal_y - self.odometry.y, 2))
+                output_distance = self.pidDistance.update(0, distance, self.time.time())
+                self.create.drive_direct(int(output_theta + output_distance), int(-output_theta + output_distance))
+                if distance < 0.01:
+                    actualDistance = initialPos - distance
+                    print(actualDistance)
+                    self.create.drive_direct(0, 0)
+                    return actualDistance
 
 
     def move(self, motorSleepTime, angle):
         # self.theta = angle
 
-        goal_x = 0
-        goal_y = 0.5
+        goal_x = self.odometry.x
+        goal_y = self.odometry.y
         goal_theta = angle
         pos = False
         distance =0
@@ -92,21 +140,30 @@ class Run:
 
         # Set the destination to be half a meter in front of the create
         if angle == 0:
-            # goal_x = 0.5
-            # goal_y = 0
-            # setDistance = math.sqrt(math.pow(goal_x, 2) + math.pow(goal_y, 2))
+            # xpos = 0.5 * math.cos(math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta)))
+            # ypos = 0.5 * math.sin(math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta)))
+            xpos = 0.5 * math.cos(self.odometry.theta)
+            ypos = 0.5 * math.sin(self.odometry.theta)
 
-            self.create.drive_direct(100, 100)
-            self.time.sleep(motorSleepTime)
-            self.create.drive_direct(0, 0)
+            goal_x += xpos
+            goal_y += ypos
+            # self.create.drive_direct(100, 100)
+            # self.time.sleep(motorSleepTime)
+            # self.create.drive_direct(0, 0)
             # Just for testing
-            self.particleFilter.recieveCommand(angle, 0.5, self.sonar.get_distance())
+            distanceTraveled = self.moveForward(goal_x, goal_y)
+            self.particleFilter.recieveCommand(angle, distanceTraveled, self.sonar.get_distance())
+
         # # Set the destination theta to be 90 degrees
         elif angle > 0:
             # startTime = self.time.time()
-            self.create.drive_direct(50,-50)
-            self.time.sleep(motorSleepTime)
-            self.create.drive_direct(0,0)
+            # self.create.drive_direct(50,-50)
+            # self.time.sleep(motorSleepTime)
+
+            # self.create.drive_direct(0,0)
+
+            distanceTraveled = self.turnCreate(angle, goal_x, goal_y)
+
             # while True:
             #     state = self.create.update()
             #     if state is not None:
@@ -121,14 +178,17 @@ class Run:
             #             break
 
 
-            self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
+            # self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
         # # Set the destination theta to be -90 degrees
         elif angle < 0:
 
-            self.create.drive_direct(-50,50)
-            self.time.sleep(motorSleepTime)
-            self.create.drive_direct(0,0)
-            self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
+            # self.create.drive_direct(-50,50)
+            # self.time.sleep(motorSleepTime)
+            # self.create.drive_direct(0,0)
+            # self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
+
+
+            distanceTraveled = self.turnCreate(angle, goal_x, goal_y)
 
         # if angle != 0:
         #     self.turnCreate(goal_theta, pos)
