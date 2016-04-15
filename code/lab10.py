@@ -42,12 +42,13 @@ class Run:
     def turnCreate(self, goalTheta, goal_x, goal_y):
         start_time = self.time.time()
         initialPos = math.sqrt(math.pow(self.odometry.x, 2) + math.pow(self.odometry.y, 2))
-        initialTheta = self.odometry.theta #math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta))
+        initialTheta = math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta))
+        # initialTheta = self.odometry.theta #math.atan2(math.sin(self.odometry.theta), math.cos(self.odometry.theta))
         initX = self.odometry.x
         initY = self.odometry.y
-        # print ("goal theta = ", initialTheta)
+        print ("goal theta = ", initialTheta)
         goalTheta = initialTheta + goalTheta
-        # print (" new goal theta = ", goalTheta)
+        print (" new goal theta = ", goalTheta)
 
 
         while True:
@@ -77,7 +78,7 @@ class Run:
                     # print("distance = ", output_distance)
                     # print("actual theta = ", math.degrees(actualTheta))
                     self.create.drive_direct(0, 0)
-                    self.particleFilter.recieveCommand(goalTheta, actualDistance, self.sonar.get_distance())
+                    # self.particleFilter.recieveCommand(goalTheta, actualDistance, self.sonar.get_distance())
                     break
 
 
@@ -101,7 +102,7 @@ class Run:
                 if distance < 0.01:
                     actualDistance = initialPos - distance
                     # print(actualDistance)
-                    self.particleFilter.recieveCommand(angle, actualDistance, self.sonar.get_distance())
+                    # self.particleFilter.recieveCommand(angle, actualDistance, self.sonar.get_distance())
                     self.create.drive_direct(0, 0)
                     return actualDistance
 
@@ -152,7 +153,7 @@ class Run:
             self.time.sleep(motorSleepTime)
 
             self.create.drive_direct(0,0)
-            # distanceTraveled = self.turnCreate(angle, goal_x, goal_y)
+            distanceTraveled = self.turnCreate(angle, goal_x, goal_y)
             self.particleFilter.recieveCommand(angle, 0, self.sonar.get_distance())
 
         self.updateDataForParticles()

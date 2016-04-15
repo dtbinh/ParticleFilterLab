@@ -11,8 +11,8 @@ class Particle:
         self.y = 0
         self.z = 0.1
         self.theta = 0
-        self.xTplusOne = 0
-        self.yTplusOne = 0
+        # self.xTplusOne = 0
+        # self.yTplusOne = 0
         self.actualWeight = 1/100
         self.weight = 1/100
         self.previousProbabiltiy  = 1/100
@@ -106,8 +106,8 @@ class ParticleFilter:
 
             # self.particles[i].weight = scipy.stats.norm.pdf(sensorReading, vLocation, self.sigma) * self.particles[i].previousProbabiltiy
             self.particles[i].weight = math.log(scipy.stats.norm.pdf(sensorReading, vLocation, self.sigma) * self.particles[i].previousProbabiltiy)
-            print("P    w = ", weightSum)
-            print(" weight est = ", self.particles[i].weight)
+            # print("P    w = ", weightSum)
+            # print(" weight est = ", self.particles[i].weight)
             weightSum += self.particles[i].weight
 
             # print("theta new = ", self.particles[i].theta)
@@ -125,8 +125,8 @@ class ParticleFilter:
 
             self.particleWeights.append(self.particles[i].actualWeight)
             testValue += self.particles[i].actualWeight
-            print("prob = ", self.particles[i].actualWeight)
-            print("asdfasdfasd = ", self.particleWeights[i])
+            # print("prob = ", self.particles[i].actualWeight)
+            # print("asdfasdfasd = ", self.particleWeights[i])
         print("prob sum = ", testValue)
         self.resampleParticles()
             # compute posterior probability
@@ -208,5 +208,14 @@ class ParticleFilter:
             # self.particles[k].y = self.particles[k].yTplusOne
             # print(self.particles[k].x, self.particles[k].y, self.particles[k].theta)
         self.particles = np.random.choice(self.particles, self.numOfParticles, p =self.particleWeights)
+        newSum = 0
+        for i in range(0,self.numOfParticles, 1):
+            newSum = newSum + self.particles[i].actualWeight
+
+
+        #normalize
+        for i in range(0,self.numOfParticles, 1):
+            self.particles[i].actualWeight = (self.particles[i].actualWeight)/newSum
+
         # print("length = ",len(self.particles))
 
